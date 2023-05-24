@@ -1,0 +1,39 @@
+{% extends 'account_base.html' %}
+{% block title %}
+    仓库管理系统-登录
+{% endblock %}
+{% block main %}
+    <div class="layui-container">
+    <h1 class="layui-field-title">注册</h1>
+        <form class="layui-form" action="{% url 'reg' %}" method="post">
+            {% csrf_token %}
+            <div class="layui-form-item"><label class="layui-form-label">用户名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入用户名"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item"><label class="layui-form-label">密码</label>
+                <div class="layui-input-block">
+                    <input type="password" name="password" lay-verify="title" autocomplete="off" placeholder="请输入密码"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item"><label class="layui-form-label">邮箱</label>
+                <div class="layui-input-block">
+                    <input type="email" name="email" lay-verify="title" autocomplete="off" placeholder="请输入邮箱"
+                           class="layui-input">
+                </div>
+            </div>
+            {% if code == 400 %}
+                <label style="color: red">账号或密码错误</label>
+            {% endif %}
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即注册</button>
+                    <p>已经有账户啦？点击返回<a href="{% url 'login' %}"> 登陆</a></p></p>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link href="{% static 'css/layui.css' %}" rel="stylesheet">
+    <script src="{% static 'layui.js' %}"></script>
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <script src="{% static 'js/jquery-3.7.0.js' %}"></script>
+</head>
+<header class="layui-header">
+    <div id="header" style="background: #404553;line-height: 250%;">
+        <ul class="layui-nav">
+            <li class="layui-nav-item">
+                <a href="{% url 'index' %}">仓库管理系统</a>
+            </li>
+            <li class="layui-nav-item">
+                <a href="{% url 'index' %}">首页</a>
+            </li>
+            {% if isLogin %}
+                <li class="layui-nav-item layui-layout-right">
+                    <a href="{% url 'logout' %}">{{ username }}</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</header>
+<body>
+{% block main %}
+{% endblock %}
+</body>
+<footer class="layui-footer center">
+    <div style="width:100%;position:absolute;bottom: 10px;text-align: center">
+        <a>Copyright By Xi'an Yunying Information Security Technology Co.Ltd</a>
+    </div>
+</footer>
+</html>

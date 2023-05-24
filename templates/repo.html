@@ -1,0 +1,74 @@
+{% load static %}
+
+<form class="layui-form">
+    <div class="layui-col-md5">
+        <div class="layui-form-item">
+            <label class="layui-form-label">工具名称</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" name="tool-name"
+                       required>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">工具类型</label>
+            <div class="layui-input-block">
+                <select name="tools-class">
+                    <option value="0">普通工具</option>
+                    <option value="1">贵重工具</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">工具价格</label>
+            <div class="layui-input-block">
+                <input class="layui-input"  name="tool-price" type="text" placeholder="0.00" required>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">工具所属部门</label>
+            <div class="layui-input-block">
+                <select name="tools-part" required>
+                    <option value="0">大型建筑设备修理</option>
+                    <option value="1">汽车修理</option>
+                    <option value="2">家电修理</option>
+                    <option value="3">计算机修理</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">工具存放区域</label>
+            <div class="layui-input-block">
+                <select name="tools-area" required>
+                    <option value="0">货柜A</option>
+                    <option value="1">货柜B</option>
+                    <option value="2">货柜C</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">工具租借情况</label>
+            <label>未租借
+                <input name="tool-borrowed" type="radio" class="layui-form-radio" value="0" checked>
+            </label>
+            <label>已租借
+                <input name="tool-borrowed" type="radio" class="layui-form-radio" value="1">
+            </label>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">工具损坏情况</label>
+            <label>未损坏
+                <input name="tool-damaged" type="radio" class="layui-form-radio" value="0" checked>
+            </label>
+            <label>损坏
+                <input name="tool-damaged" type="radio" class="layui-form-radio" value="1">
+            </label>
+        </div>
+    </div>
+
+    <div class="layui-col-md3 layui-col-md-offset1">
+        <div class="layui-form-item">
+            <input value="增加" class="layui-btn" lay-submit>
+            <input value="重置" type="reset" class="layui-btn layui-btn-primary">
+        </div>
+    </div>
+</form>

@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% block title %}
+    仓库管理系统-首页
+{% endblock %}
+{% block main %}
+    <div class="layui-col-md3">
+        <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="demo" style="margin-right: 10px;">
+            <li class="layui-nav-item layui-nav-itemed"><a href="javascript:;">用户信息概览</a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a id="mine" href="javascript:;">个人信息管理</a>
+                    </dd>
+                    {% if isAdmin %}
+                        <dd>
+                            <a id="manage" href="javascript:">用户管理</a>
+                        </dd>
+                    {% endif %}
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a>仓库管理</a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a id="base" href="javascript:;">仓库信息概览</a>
+                    </dd>
+                    <dd>
+                        <a id="borrow" href="javascript:">物品租借与归还</a>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-col-md9">
+        <div class="layui-container">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                <legend id="legend-title">欢迎您，{{ username }}</legend>
+            </fieldset>
+            <hr class="layui-border-green">
+            <div id="inner">
+                <div class="layui-text">
+                    <p>您的职位是:{{ em.em_classes }}</p>
+                </div>
+                <div class="layui-text">
+                    <p>您的所属部门是:{{ em.em_belong }}</p>
+                </div>
+            </div>
+            <div id="inner2">
+
+            </div>
+        </div>
+    </div>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    <script>
+        var table = layui.table;
+
+        function renderForm() {
+            layui.use('form', function () {
+                var form = layui.form
+                form.on('submit', function (data) {
+                    console.log(data['field'])
+                    $.ajax({
+                        url: '/addTool/',
+                        data: data['field'],
+                        method: 'POST'
+                    })
+                    table.reload('table')
+                });
+
+                form.render()
+            })
+        }
+
+        function renderForm2() {
+            layui.use('form', function () {
+                var form = layui.form
+                form.on('submit', function (data) {
+                    console.log(data['field'])
+                    $.ajax({
+                        url: '/borrowTool/',
+                        data: data['field'],
+                        method: 'POST',
+                        success: function (e){
+                            layer.msg(e)
+                            table.reload()
+                        }
+                    })
+                    table.reload('table')
+                });
+
+                form.render()
+            })
+        }
+
+        function renderTable() {
+            table.render({
+                elem: '#table'
+                , height: 312
+                , url: '/manage' //数据接口
+                , page: true //开启分页
+                , cols: [[ //表头
+                    {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'}
+                    , {field: 'username', title: '用户名', width: 80}
+                    , {field: 'email', title: '邮箱', width: 130, sort: true}
+                    , {field: 'is_active', title: '是否启用', width: 100}
+                    , {field: 'date_joined', title: '注册时间', width: 170}
+                    , {field: 'last_login', title: '最后一次登录', width: 170}
+                    , {fixed: 'right', width: 150, align: 'center', toolbar: '#barDemo'} //这里的toolbar值是模板元素的选择器
+                ]]
+            });
+        }
+
+        $(document).ready(
+            $('#manage').click(function () {
+                $.ajax({
+                    url: '/manage',
+                    success: function (e) {
+                        $('#inner2')[0].innerHTML = ''
+                        $('#inner')[0].innerHTML = '<table id="table" lay-filter="test"></table>';
+                        $('#legend-title')[0].innerHTML = '用户管理'
+                        renderTable()
+                    }
+                })
+            }),
+            $('#mine').click(function () {
+                $('#inner2')[0].innerHTML = ''
+                $.ajax({
+                    url: '/mine',
+                    success: function (e) {
+                        $('#legend-title')[0].innerHTML = '欢迎您，{{ username }}'
+                        $('#inner')[0].innerHTML = e;
+                    }
+                })
+            }),
+            $('#base').click(function () {
+                $('#inner2')[0].innerHTML = ''
+                $.ajax({
+                    url: '/base',
+                    success: function (e) {
+                        $('#legend-title')[0].innerHTML = '仓库信息概览({{ em.em_belong }})'
+                        $('#inner')[0].innerHTML = '<table id="table" lay-filter="test"></table>';
+                        var table = layui.table;
+                        table.render({
+                            elem: '#table'
+                            , height: 312
+                            , url: '/base' //数据接口
+                            , page: true //开启分页
+                            , cols: [[ //表头
+                                {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'}
+                                , {field: 'tool_name', title: '工具名称', width: 80, edit: 'text'}
+                                , {field: 'tool_class', title: '工具类型', width: 80}
+                                , {field: 'tool_price', title: '工具价格', width: 130, sort: true, edit: 'text'}
+                                , {field: 'tool_part', title: '工具所属部门', width: 100}
+                                , {field: 'tool_area', title: '工具所属区域', width: 170}
+                                , {field: 'tool_damaged', title: '工具是否损坏', width: 170}
+                                , {field: 'tool_borrowed', title: '工具租借情况', width: 170}
+                                , {fixed: 'right', width: 150, align: 'center', toolbar: '#barDemo'} //这里的toolbar值是模板元素的选择器
+                            ]]
+                        });
+                        table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+                            var data = obj.data; //获得当前行数据
+                            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+                            if (layEvent === 'del') { //删除
+                                layer.confirm('真的删除行么', function (index) {
+                                    console.log(data)
+                                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+
+                                    $.ajax({
+                                        url: '/delTool/',
+                                        method: 'POST',
+                                        data: 'id=' + data.id
+                                    })
+                                    layer.close(index);
+                                    //向服务端发送删除指令
+                                });
+                            } else if (layEvent === 'edit') { //编辑
+                                console.log(obj);
+                                $.ajax({
+                                    url: '/editTool/',
+                                    method: 'POST',
+                                    data: obj.data
+                                })
+                            } else if (layEvent === 'LAYTABLE_TIPS') {
+                                layer.alert('Hi，头部工具栏扩展的右侧图标。');
+                            }
+                        });
+                    }
+                })
+                $.ajax({
+                    url: '/base_page',
+                    success: function (e) {
+                        $('#inner2')[0].innerHTML = e
+                        renderForm()
+                    }
+                })
+            }),
+            $('#borrow').click(function () {
+                $('#inner2')[0].innerHTML = ''
+                $.ajax({
+                    url: '/borrow_page/',
+                    success: function (e) {
+                        $('#inner')[0].innerHTML = '<table id="table" lay-filter="test"></table>';
+                        var table = layui.table;
+                        table.render({
+                            elem: '#table'
+                            , height: 312
+                            , url: '/base' //数据接口
+                            , page: true //开启分页
+                            , cols: [[ //表头
+                                {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'}
+                                , {field: 'tool_name', title: '工具名称', width: 80, edit: 'text'}
+                                , {field: 'tool_class', title: '工具类型', width: 80}
+                                , {field: 'tool_price', title: '工具价格', width: 130, sort: true, edit: 'text'}
+                                , {field: 'tool_part', title: '工具所属部门', width: 100}
+                                , {field: 'tool_area', title: '工具所属区域', width: 170}
+                                , {field: 'tool_damaged', title: '工具是否损坏', width: 170}
+                                , {field: 'tool_borrowed', title: '工具租借情况', width: 170}
+                                , {fixed: 'right', width: 150, align: 'center', toolbar: '#barDemo'} //这里的toolbar值是模板元素的选择器
+                            ]]
+                        });
+                        $('#inner2')[0].innerHTML = e
+                        renderForm2()
+                    }
+                })
+            })
+        )
+    </script>
+{% endblock %}
